@@ -33,7 +33,8 @@ namespace CallCentrum2
             {
                 _lblFullname.Text = "N/A";
                 _lblTelephone.Text = "N/A";
-                _txtSocial.Enabled = false;
+                _lblGender.Text = "N/A";
+                _lblBirthDate.Text = "N/A";
                 _txtSocial.Text = "";
                 _datePickerCovid.Enabled = false;
                 return;
@@ -49,6 +50,30 @@ namespace CallCentrum2
             UpdateVax(_datePickerVax2,PersonInfo.SecondDose);
             _comboVaxState.SelectedIndex = (int)PersonInfo.FirstDose.State;
             _comboVaxState2.SelectedIndex = (int)PersonInfo.SecondDose.State;
+            if (PersonInfo.Region != null)
+            {
+                int index = _comboRegion.Items.IndexOf(PersonInfo.Region);
+                if (index>0)
+                {
+                    _comboRegion.SelectedIndex = index;
+                }
+            }
+            UpdateSocial();
+        }
+
+        private void UpdateSocial()
+        {
+            if (PersonInfo == null) return;
+            if (PersonInfo.IsSocialValid)
+            {
+                _lblGender.Text = PersonInfo.Gender.ToString();
+                _lblBirthDate.Text = PersonInfo.DateOfBirth?.ToString("MM/dd/yyyy");
+            }
+            else
+            {
+                _lblGender.Text = "N/A";
+                _lblBirthDate.Text = "N/A";
+            }
         }
 
         private void UpdateHadCovid()
@@ -76,6 +101,7 @@ namespace CallCentrum2
             if (PersonInfo != null)
             {
                 PersonInfo.SocialSecurityNumber = _txtSocial.Text;
+                UpdateSocial();
             }
         }
 
@@ -119,6 +145,14 @@ namespace CallCentrum2
             if (PersonInfo != null)
             {
                 PersonInfo.SecondDose.Time = _datePickerVax2.Value;
+            }
+        }
+
+        private void _comboRegion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (PersonInfo != null)
+            {
+                PersonInfo.Region = _comboRegion.Items[_comboRegion.SelectedIndex].ToString();
             }
         }
     }
